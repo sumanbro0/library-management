@@ -30,7 +30,10 @@ class Manager:
         print(" 'e': Exits the system.")
         print(" 'rep': View the entire report.")
 
+
+
     def run_library_system(self):
+        self.show_help()
         while True:
             choice = input("Enter your choice: ").strip().lower()
             match choice:
@@ -54,7 +57,7 @@ class Manager:
                     
                 case "u":
                     self.users_manager.upgrade_user()
-                    
+
                 case "r":
                     if self.user:            
                         self.library.return_books(self.user)
