@@ -31,9 +31,19 @@ class Manager:
                 case "return":
                     self.library.return_books()
                 case "select":
-                    self.select_student()
+                        self.select_student(self.user)
+                    
+                    
                 case "upgrade":
                     self.users_manager.upgrade_user()
+                case "return":
+                    if self.user:
+            
+                        self.library.return_books(self.user)
+                    else:
+                        print("Select User to operate on")
+                        self.select_student()
+
                 case "b":
                     if self.user:
                         print(self.user)

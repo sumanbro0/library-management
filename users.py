@@ -8,7 +8,7 @@ class Users:
         try:
             name = str(input("Enter the name: ")).strip()
             address = str(input("Enter the address: ")).strip()
-            phone_number = input("Enter the phone number (unique): ").strip()
+            phone_number = int(input("Enter the phone number (unique): ")).strip()
 
             if not name or not address or not phone_number:
                 raise ValueError("Name, address, and phone number are required.")
