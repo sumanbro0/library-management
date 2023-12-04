@@ -26,6 +26,7 @@ class Users:
                 'phone_number': phone_number,
                 'books': [],
                 'borrowed': 0,
+                'fine': 0,
                 'special_member': False
             }
 

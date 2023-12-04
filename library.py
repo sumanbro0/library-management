@@ -39,17 +39,19 @@ class Library:
                     book_tobe_appended = copy.copy(b)
                     del book_tobe_appended["quantity"]
                     if b["special"] and user["special_member"]:
-                            book_tobe_appended["borrowed"]=datetime.now()
+                            book_tobe_appended["borrowed"]=datetime.now().isoformat()
                             b["quantity"]-=1
                             user["books"].append(book_tobe_appended)
                             user["borrowed"]+=1  
-                            print(f"Book must be returned within {datetime.now()+timedelta(days=5)}")  
+                            return_date=datetime.now()+timedelta(days=5)
+                            print(f"Book must be returned within {return_date.isoformat()}")  
                     elif not b["special"]:
                             b["quantity"]-=1
-                            book_tobe_appended["borrowed"]=datetime.now()
+                            book_tobe_appended["borrowed"]=datetime.now().isoformat()
                             user["books"].append(book_tobe_appended)
                             user["borrowed"]+=1  
-                            print(f"Book must be returned within {datetime.now()+timedelta(days=5)}")  
+                            return_date=datetime.now()+timedelta(days=5)
+                            print(f"Book must be returned within {return_date.isoformat()}")   
                     else:
                         print("This book is only for Special user Please upgrade to premium plan")
                 else:
@@ -73,6 +75,7 @@ class Library:
                         book["quantity"]+=1
                         removed=True
                         user["books"].remove(b)
+                        user['borrowed']-=1
                         break
                 if removed:
                     print("Book Returned")
@@ -122,3 +125,4 @@ class Library:
         except Exception as e:
             print(f"Error loading book details: {e}")
 
+    
