@@ -1,14 +1,17 @@
+import json
 import uuid
 
 class Users:
+    filename="users.json"
     def __init__(self):
         self.users = []
+        self.load_users_from_file()
 
     def add_user(self):
         try:
             name = str(input("Enter the name: ")).strip()
             address = str(input("Enter the address: ")).strip()
-            phone_number = int(input("Enter the phone number (unique): ")).strip()
+            phone_number = int(input("Enter the phone number (unique): "))
 
             if not name or not address or not phone_number:
                 raise ValueError("Name, address, and phone number are required.")
@@ -68,17 +71,32 @@ class Users:
                 print("User Upgraded")
             else:
                 print("User already a special member")
+
             
         except Exception as e:
             print("User not found")
 
-    def save_users_to_file(self, filename):
+    def show_user(self,user):
+        if user:
+            print("\nUser Details:")
+            print("\n".join(f"{key}: {value}" for key, value in user.items()))
+            print('-' * 20)
+
+    def save_users_to_file(self):
         try:
-            with open(filename, 'w') as file:
-                for user in self.users:
-                    file.write(str(user) + '\n')
+            with open(self.filename, 'w') as file:
+                json.dump(self.users, file, indent=2)
 
-            print(f"\nUser details saved to {filename}.")
-
+            print(f"\nUser details saved to {self.filename} as JSON.")
         except Exception as e:
-            print(f"Error saving user details to file: {e}")
+            print(f"Error saving user details: {e}")
+
+    def load_users_from_file(self):
+        try:
+            with open(self.filename, 'r') as file:
+                self.users = json.load(file)
+            print(f"\nUser details loaded from {self.filename}.")
+        except FileNotFoundError:
+            print(f"\nFile {self.filename} not found. No user data loaded.")
+        except Exception as e:
+            print(f"Error loading user details: {e}")
