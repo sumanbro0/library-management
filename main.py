@@ -37,7 +37,7 @@ class Manager:
                     txt_file.write("-" * 30 + "\n")
 
                 txt_file.write("\nBook Information:\n")
-                for book in Library.books:
+                for book in self.library.books:
                     txt_file.write(f"\nBook ID: {book['id']}\n")
                     txt_file.write(f"Book Name: {book['name']}\n")
                     txt_file.write(f"Quantity Available: {book['quantity']}\n")
@@ -60,25 +60,40 @@ class Manager:
 
     def gen_fine_report(self):
         fined_users = []
-
-        for user in self.users_manager:
+        for user in self.users_manager.users:
             if user["books"]:
                 for book in user["books"]:
-                    # Change to give time of 5 days
-                    if (datetime.fromisoformat(book["borrowed"]) + timedelta(minutes=1)) < datetime.now():
-                        user["fine"] += 5
+
+                    ######################### for days #############################
+                    # borrowed_time = datetime.fromisoformat(book["borrowed"])
+                    # due_time = borrowed_time + timedelta(days=1)
+
+                    # if datetime.now() > due_time:
+                    #     days_overdue = (datetime.now() - due_time).days
+                    #     fine = days_overdue * 5
+                    #     user["fine"] = fine
+                    #     fined_users.append(user.copy())
+
+                    ######################### for mins(testing) #############################
+
+                    borrowed_time = datetime.fromisoformat(book["borrowed"])
+                    due_time = borrowed_time + timedelta(minutes=1)
+
+                    if datetime.now() > due_time:
+                        days_overdue = (datetime.now() - due_time).total_seconds()//60
+                        fine = days_overdue * 5
+                        user["fine"] = fine
                         fined_users.append(user.copy())
+
 
 
         return fined_users
 
     def save_fined_users_to_file(self, filename):
         fined_users = self.gen_fine_report()
-
         try:
             with open(filename, 'w') as file:
                 json.dump(fined_users, file, indent=2)
-
             print(f"\nFine report saved to {filename} as JSON.")
         except Exception as e:
             print(f"Error saving fine report: {e}")
@@ -160,7 +175,7 @@ class Manager:
                     print("Report generated successfully ")
 
                 case "fine":
-                    self.gen_fine_report()
+                    self.save_fined_users_to_file("fined.json")
                     print("Fine Report generated successfully ")
 
                 case _:
