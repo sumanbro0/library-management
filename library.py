@@ -92,7 +92,7 @@ class Library:
             for book in self.books:
                 
                 if book["special"]:
-                    print("\nSpecial Users Only".center(100,"-"))
+                    print("\nSpecial Users Only".center(70,"-"))
                 print("\n| {:^40} | {:^20} | {:^20} | {:^10} | {:^30} |\n".format(
                     book["id"],
                     book["name"],
