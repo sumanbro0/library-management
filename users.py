@@ -1,11 +1,13 @@
 import json
 import uuid
 
+from helpers import load_from_file
+
 class Users:
     filename="users.json"
     def __init__(self):
         self.users = []
-        self.load_users_from_file()
+        self.users.extend(load_from_file(self.filename))
 
     def add_user(self):
         try:
@@ -83,21 +85,4 @@ class Users:
             print("\n".join(f"{key}: {value}" for key, value in user.items()))
             print('-' * 20)
 
-    def save_users_to_file(self):
-        try:
-            with open(self.filename, 'w') as file:
-                json.dump(self.users, file, indent=2)
 
-            print(f"\nUser details saved to {self.filename} as JSON.")
-        except Exception as e:
-            print(f"Error saving user details: {e}")
-
-    def load_users_from_file(self):
-        try:
-            with open(self.filename, 'r') as file:
-                self.users = json.load(file)
-            print(f"\nUser details loaded from {self.filename}.")
-        except FileNotFoundError:
-            print(f"\nFile {self.filename} not found. No user data loaded.")
-        except Exception as e:
-            print(f"Error loading user details: {e}")

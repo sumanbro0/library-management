@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 import json
+from helpers import load_from_file, save_to_file
 from library import Library
 from users import Users
+from write_report import write_report
 
 
 class Manager:
@@ -19,43 +21,12 @@ class Manager:
     
     def save_reports(self):
         try:
-            with open("report.json", 'w') as json_file:
-                json.dump(self.users_manager.users, json_file, indent=2)
-                print("\nUser information saved to report.json.")
-
-            with open("report.txt", 'w') as txt_file:
-                txt_file.write("Library Management System Report\n\n")
-                txt_file.write("User Information:\n")
-                for user in self.users_manager.users:
-                    txt_file.write(f"\nUser ID: {user['user_id']}\n")
-                    txt_file.write(f"Name: {user['name']}\n")
-                    txt_file.write(f"Borrowed Books:\n")
-                    for book in user['books']:
-                        txt_file.write(f"  - Book ID: {book['id']}\n")
-                        txt_file.write(f"    Book Name: {book['name']}\n")
-                        txt_file.write(f"    Borrowed Date: {book['borrowed']}\n")
-                    txt_file.write("-" * 30 + "\n")
-
-                txt_file.write("\nBook Information:\n")
-                for book in self.library.books:
-                    txt_file.write(f"\nBook ID: {book['id']}\n")
-                    txt_file.write(f"Book Name: {book['name']}\n")
-                    txt_file.write(f"Quantity Available: {book['quantity']}\n")
-                    txt_file.write("-" * 30 + "\n")
-
-                print("\nReport.txt generated successfully.")
+            save_to_file("report.json",self.users_manager.users)
+            write_report(self.users_manager.users,self.library.books)
 
         except Exception as e:
             print(f"Error saving reports: {e}")
 
-    def view_report(self):
-        try:
-            with open("report.txt", 'r') as txt_file:
-                content = txt_file.read()
-                print(content)
-
-        except FileNotFoundError:
-            print("Report.txt not found. Please generate a report first.")
         
 
     def gen_fine_report(self):
@@ -81,7 +52,7 @@ class Manager:
 
                     if datetime.now() > due_time:
                         days_overdue = (datetime.now() - due_time).total_seconds()//60
-                        fine = days_overdue * 5
+                        fine =user["fine"]+ days_overdue * 5
                         user["fine"] = fine
                         fined_users.append(user.copy())
 
@@ -89,16 +60,14 @@ class Manager:
 
         return fined_users
 
-    def save_fined_users_to_file(self, filename):
+    def save_fined_users_to_file(self):
         fined_users = self.gen_fine_report()
         try:
-            with open(filename, 'w') as file:
-                json.dump(fined_users, file, indent=2)
-            print(f"\nFine report saved to {filename} as JSON.")
+            save_to_file("fined.json",fined_users)
+            print("Fine Report generated successfully ")
+
         except Exception as e:
             print(f"Error saving fine report: {e}")
-
-
 
 
     
@@ -116,7 +85,6 @@ class Manager:
         print(" 'h': Displays this help menu.")
         print(" 'e': Exits the system.")
         print(" 'rep': View the entire report.")
-        print(" 'fine': View the fine report.")
 
 
 
@@ -162,8 +130,8 @@ class Manager:
                 
                 case "e":
                     print("Saving data")
-                    self.library.save_books_to_file()
-                    self.users_manager.save_users_to_file()
+                    save_to_file(self.users_manager.filename,self.users_manager.users)
+                    save_to_file(self.library.filename,self.library.books)
                     print("Exitting...")
                     break
                 
@@ -171,12 +139,10 @@ class Manager:
                     self.show_help()
 
                 case "rep":
+                    self.save_fined_users_to_file()
                     self.save_reports()
                     print("Report generated successfully ")
 
-                case "fine":
-                    self.save_fined_users_to_file("fined.json")
-                    print("Fine Report generated successfully ")
 
                 case _:
                     print("Invalid choice")

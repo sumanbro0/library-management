@@ -3,12 +3,13 @@ from datetime import datetime, timedelta
 import json
 import uuid
 
+from helpers import load_from_file
+
 class Library:
     filename="books.json"
     def __init__(self):
         self.books = []
-        self.load_books_from_file()
-
+        self.books.extend(load_from_file(self.filename))
 
     def add_books(self):
         try:
@@ -36,24 +37,20 @@ class Library:
                 book_tobe_taken=str(input("Enter book id you want to take: ")).strip()
                 b=next((book for book in self.books if str(book["id"])==book_tobe_taken),None)
                 if b:
-                    book_tobe_appended = copy.copy(b)
-                    del book_tobe_appended["quantity"]
-                    if b["special"] and user["special_member"]:
-                            book_tobe_appended["borrowed"]=datetime.now().isoformat()
-                            b["quantity"]-=1
-                            user["books"].append(book_tobe_appended)
-                            user["borrowed"]+=1  
-                            return_date=datetime.now()+timedelta(days=5)
-                            print(f"Book must be returned within {return_date.isoformat()}")  
-                    elif not b["special"]:
-                            b["quantity"]-=1
-                            book_tobe_appended["borrowed"]=datetime.now().isoformat()
-                            user["books"].append(book_tobe_appended)
-                            user["borrowed"]+=1  
-                            return_date=datetime.now()+timedelta(days=5)
-                            print(f"Book must be returned within {return_date.isoformat()}")   
-                    else:
+                    
+
+                    if b["special"] and not user["special_member"]:
                         print("This book is only for Special user Please upgrade to premium plan")
+                    else:
+                        book_tobe_appended = copy.copy(b)
+                        del book_tobe_appended["quantity"]
+                        b["quantity"]-=1
+                        book_tobe_appended["borrowed"]=datetime.now().isoformat()
+                        user["books"].append(book_tobe_appended)
+                        user["borrowed"]+=1  
+                        return_date=datetime.now()+timedelta(days=5)
+                        print(f"Book must be returned within {return_date.isoformat()}")   
+                        
                 else:
                     print("Book not found")      
             else:
