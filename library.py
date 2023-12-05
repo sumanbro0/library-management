@@ -36,7 +36,7 @@ class Library:
             if (not user["special_member"] and user["borrowed"]<1 ) or (user["special_member"] and user["borrowed"]<2):
                 book_tobe_taken=str(input("Enter book id you want to take: ")).strip()
                 b=next((book for book in self.books if str(book["id"])==book_tobe_taken),None)
-                if b:
+                if b and b["quantity"]>0:
                     
 
                     if b["special"] and not user["special_member"]:
