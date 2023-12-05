@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import json
-from helpers import load_from_file, save_to_file
+from helpers import  save_to_file
 from library import Library
 from users import Users
 from write_report import write_report
@@ -102,7 +102,7 @@ class Manager:
                 case "vb":
                     self.library.show_books()
                 case "s":
-                    self.select_student(self.user)
+                    self.select_student()
 
                 case "su":
                     if self.user:            
