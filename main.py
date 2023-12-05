@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-import json
 from helpers import  save_to_file
 from library import Library
 from users import Users
@@ -36,12 +35,15 @@ class Manager:
                 for book in user["books"]:
                     borrowed_time = datetime.fromisoformat(book["borrowed"])
                     due_time = borrowed_time + timedelta(days=15)
-                    if datetime.now() > due_time:
-                        user["fine"] = 15
+                    if datetime.now()+timedelta(days=16) > due_time:
+                        
+                        user["fine"] = 10*((datetime.now()-due_time).total_seconds()//86400)
+                        # user["fine"] = 10*((datetime.now()-due_time).total_seconds()//60)
+                        print("fine",user["fine"])
                         fined_users.append(user.copy())
-
-
         return fined_users
+    
+
 
     def save_fined_users_to_file(self):
         fined_users = self.gen_fine_report()
