@@ -35,37 +35,10 @@ class Manager:
             if user["books"]:
                 for book in user["books"]:
                     borrowed_time = datetime.fromisoformat(book["borrowed"])
-                    due_time = borrowed_time + timedelta(minutes=1)
-
-                    days_overdue = max(0, (datetime.now() - due_time).total_seconds() // 60)
-                    fine = days_overdue * 5
-
-                    user["fine"] = fine
-
-                    if fine > 0:
+                    due_time = borrowed_time + timedelta(days=15)
+                    if datetime.now() > due_time:
+                        user["fine"] = 15
                         fined_users.append(user.copy())
-
-                    ######################### for days #############################
-                    # borrowed_time = datetime.fromisoformat(book["borrowed"])
-                    # due_time = borrowed_time + timedelta(days=1)
-
-                    # if datetime.now() > due_time:
-                    #     days_overdue = (datetime.now() - due_time).days
-                    #     fine = days_overdue * 5
-                    #     user["fine"] = fine
-                    #     fined_users.append(user.copy())
-
-                    ######################### for mins(testing) #############################
-
-                    # borrowed_time = datetime.fromisoformat(book["borrowed"])
-                    # due_time = borrowed_time + timedelta(minutes=1)
-                    # fine=user["fine"] 
-                    # if datetime.now() > due_time:
-                    #     days_overdue = (datetime.now() - due_time).total_seconds()//60
-                    #     fine +=days_overdue * 5
-                    #     user["fine"]=fine
-                    #     fined_users.append(user.copy())
-
 
 
         return fined_users
